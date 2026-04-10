@@ -12,7 +12,15 @@ Full-stack food delivery demo: **Spring Boot 3** REST API (MySQL, JWT, Spring Se
 
 ## Database schema & diagrams
 
-Assets live in the [`Database Schema/`](Database%20Schema/) folder.
+Assets live in the [`Database Schema/`](Database%20Schema/) folder (ERD, architecture, and user-flow visuals).
+
+### System architecture – layered overview
+
+Three-tier view: presentation (React), business logic (Spring Boot REST), and data (MySQL via Spring Data JPA), plus cross-cutting security, logging, and exception handling.
+
+![System architecture: presentation, business logic, and data layers](Database%20Schema/system-architecture.png)
+
+**Implementation note:** The storefront is **React (Vite)** only—there is no Thymeleaf UI. The backend is a **single Spring Boot application** with REST controllers and services (not separately deployed microservices). Restaurants and menu items map to the `users` and `menu_items` tables (see ERD note below); **cart** data is persisted for logged-in customers.
 
 ### Entity-relationship diagram (ERD)
 
@@ -35,7 +43,7 @@ High-level flow from browsing to confirmation (JWT auth, cart, validation, persi
 - `src/main/java/...` — Spring Boot application (`com.food.foodorderingsystem`)
 - `food-ordering-app/` — React SPA (run with `npm run dev`)
 - `db/` — optional SQL helpers (e.g. extra seed data)
-- `Database Schema/` — ERD (`database-erd.png`) and order-placement flowchart (`order-placement-flowchart.png`)
+- `Database Schema/` — system architecture (`system-architecture.png`), ERD (`database-erd.png`), order-placement flowchart (`order-placement-flowchart.png`)
 - `src/main/resources/application.properties.example` — template for local configuration (**secrets are not committed**)
 
 ## Prerequisites
