@@ -1,7 +1,6 @@
 package com.food.foodorderingsystem.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -96,5 +94,53 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isActive;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }
