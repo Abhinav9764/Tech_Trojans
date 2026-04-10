@@ -45,6 +45,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body(error);
         }
 
+        if (request.getRole() == Role.ADMIN) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Administrator accounts cannot be created via public signup");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        }
+
         // Validate restaurant name if role is RESTAURANT
         if (request.getRole() == Role.RESTAURANT && (request.getRestaurantName() == null || request.getRestaurantName().trim().isEmpty())) {
             Map<String, String> error = new HashMap<>();
@@ -72,6 +78,25 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@Valid @RequestBody AuthRequest request) {
+        return signInByRole(request, null);
+    }
+
+    @PostMapping("/signin/user")
+    public ResponseEntity<?> signinUser(@Valid @RequestBody AuthRequest request) {
+        return signInByRole(request, Role.USER);
+    }
+
+    @PostMapping("/signin/restaurant")
+    public ResponseEntity<?> signinRestaurant(@Valid @RequestBody AuthRequest request) {
+        return signInByRole(request, Role.RESTAURANT);
+    }
+
+    @PostMapping("/signin/admin")
+    public ResponseEntity<?> signinAdmin(@Valid @RequestBody AuthRequest request) {
+        return signInByRole(request, Role.ADMIN);
+    }
+
+    private ResponseEntity<?> signInByRole(AuthRequest request, Role requiredRole) {
         try {
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -82,7 +107,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 
-        User user = userRepository.findByEmail(request.getEmail()).get();
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (requiredRole != null && user.getRole() != requiredRole) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Unauthorized for this login endpoint");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        }
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().toString());
 
         return ResponseEntity.ok(new AuthResponse(token, user.getEmail(), user.getRole().toString(), user.getFullName()));

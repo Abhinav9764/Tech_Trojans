@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    @apply bg-zinc-50 text-zinc-900;
+  }
+
+  body {
+    @apply min-h-dvh antialiased;
+  }
+
+  ::selection {
+    @apply bg-orange-200 text-zinc-900;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-6xl px-4;
+  }
+}

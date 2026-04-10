@@ -1,8 +1,6 @@
 package com.food.foodorderingsystem.entity;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +11,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -37,8 +33,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    @Column(name = "is_active")
-    private boolean isActive = true;
+    private String restaurantName;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -46,8 +41,40 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // For Restaurant owners - store their restaurant name
-    private String restaurantName;
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
+    public User() {
+    }
+
+    public User(
+            Long id,
+            String email,
+            String password,
+            String fullName,
+            String phoneNumber,
+            Role role,
+            String restaurantName,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            boolean isActive,
+            List<Order> orders
+    ) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.restaurantName = restaurantName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isActive = isActive;
+        this.orders = orders;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -60,20 +87,19 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
 
-    // UserDetails interface methods for Spring Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -96,12 +122,24 @@ public class User implements UserDetails {
         return isActive;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {
@@ -136,11 +174,35 @@ public class User implements UserDetails {
         this.restaurantName = restaurantName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.isActive = active;
+        isActive = active;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

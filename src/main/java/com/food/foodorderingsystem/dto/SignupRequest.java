@@ -18,9 +18,9 @@ public class SignupRequest {
 
     private String phoneNumber;
 
-    private Role role; // USER, RESTAURANT, ADMIN
+    private Role role;
 
-    private String restaurantName; // Required if role is RESTAURANT
+    private String restaurantName;
 
     public String getFullName() {
         return fullName;
