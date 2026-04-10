@@ -10,11 +10,32 @@ Full-stack food delivery demo: **Spring Boot 3** REST API (MySQL, JWT, Spring Se
 | Database | MySQL 8 |
 | Frontend | React 19, TypeScript, Vite 8, Tailwind CSS 4 |
 
+## Database schema & diagrams
+
+Assets live in the [`Database Schema/`](Database%20Schema/) folder.
+
+### Entity-relationship diagram (ERD)
+
+Entity-relationship overview: users place orders; restaurants receive orders and own menu items; orders contain line items that reference menu items.
+
+![Entity-relationship diagram: USERS, RESTAURANTS, ORDERS, MENU_ITEMS, ORDER_ITEMS](Database%20Schema/database-erd.png)
+
+In this codebase, **restaurants are modeled as `users` rows** with role `RESTAURANT` (and fields like `restaurant_name`), not a separate `restaurants` table. There are also **cart** entities for the shopping cart. Order and order-item relationships match the diagram.
+
+### Core user flow – order placement
+
+High-level flow from browsing to confirmation (JWT auth, cart, validation, persisted order with status `PLACED`, optional email).
+
+![Flowchart: core user flow for order placement](Database%20Schema/order-placement-flowchart.png)
+
+**Implementation note:** checkout in this project is triggered with **`POST /api/user/cart/checkout`** (authenticated customer), not `POST /api/orders`. The flowchart describes the same logical steps.
+
 ## Repository layout
 
 - `src/main/java/...` — Spring Boot application (`com.food.foodorderingsystem`)
 - `food-ordering-app/` — React SPA (run with `npm run dev`)
 - `db/` — optional SQL helpers (e.g. extra seed data)
+- `Database Schema/` — ERD (`database-erd.png`) and order-placement flowchart (`order-placement-flowchart.png`)
 - `src/main/resources/application.properties.example` — template for local configuration (**secrets are not committed**)
 
 ## Prerequisites
